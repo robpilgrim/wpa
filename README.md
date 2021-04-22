@@ -10,6 +10,22 @@ simple sh script to work with wpa_supplicant if you're lazy enough to use long c
 ```
 put the script in $PATH and run it as root.
 ```
+## EXAMPLE
+```
+1)
+# wpa -s
+output:
+WIFI_OF_YOUR_NEIGHBOUR
+HOME_SWEET_HOME
+RICHARD_STALLMANS_WIFI
+LINUS_TORVALDS_WIFI
+
+2)
+# wpa -a HOME_SWEET_HOME PASSWORD
+
+3)
+# wpa -c HOME_SWEET_HOME
+```
 
 # HELP PAGE
 ```
