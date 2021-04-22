@@ -3,7 +3,6 @@ NUM="${2}"
 PASS="${3}"
 CARD="$(iw dev | awk '/Interface/ {print $2}')"
 
-cl() { wpa -c wpa_supplicant ;}
 scan() { iw dev $CARD scan | grep SSID | sed 's/SSID: //gi'>/dev/tty;} 
 
 connect() {  wpa_supplicant -B -i $CARD -c /etc/wpa_supplicant/"$NUM".conf ;  dhclient -nw ;
@@ -17,8 +16,6 @@ echo " ">/dev/tty;
 				echo "    add[--add|-a]: adds a network." > /dev/tty;
 echo " ">/dev/tty;
  				echo "    connect[--connect|-c]: connects to a network." > /dev/tty; 
-echo " ">/dev/tty;
-				echo "    cl[-cl] connects to the last connected network." > /dev/tty;
 echo " ">/dev/tty;
 				echo "    disconnect[--disconnect|-d]: disconnects from the web." > /dev/tty;	
 echo " ">/dev/tty;
