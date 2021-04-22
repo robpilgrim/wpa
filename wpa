@@ -1,0 +1,53 @@
+#!/bin/sh
+NUM="${2}"
+PASS="${3}"
+CARD="$(iw dev | awk '/Interface/ {print $2}')"
+
+cl() { wpa -c wpa_supplicant ;}
+scan() { iw dev $CARD scan | grep SSID | sed 's/SSID: //gi'>/dev/tty;} 
+
+connect() {  wpa_supplicant -B -i $CARD -c /etc/wpa_supplicant/"$NUM".conf ;  dhclient -nw ;
+				    echo "Successfully connected!" > /dev/tty; 
+					   cp /etc/wpa_supplicant/"$NUM".conf /etc/wpa_supplicant/wpa_supplicant.conf;}		
+disconnect() {  killall wpa_supplicant ;  dhclient -r ; 
+                rm /etc/wpa_supplicant/wpa_supplicant.conf; echo "Disconnected!" > /dev/tty;}
+
+help() { echo "    scan[--scan|-s]: scans for available wireless networks around you." > /dev/tty;
+echo " ">/dev/tty;
+				echo "    add[--add|-a]: adds a network." > /dev/tty;
+echo " ">/dev/tty;
+ 				echo "    connect[--connect|-c]: connects to a network." > /dev/tty; 
+echo " ">/dev/tty;
+				echo "    cl[-cl] connects to the last connected network." > /dev/tty;
+echo " ">/dev/tty;
+				echo "    disconnect[--disconnect|-d]: disconnects from the web." > /dev/tty;	
+echo " ">/dev/tty;
+				echo "    forget[--forget|-f]: removes a network from saved."> /dev/tty;
+echo " ">/dev/tty;
+				echo "    help[--help|-h]: opens this page." > /dev/tty;}
+
+add() {      touch /etc/wpa_supplicant/"$NUM".conf ; echo "ctrl_interface=/run/wpa_supplicant" | 
+						 tee -a /etc/wpa_supplicant/"$NUM".conf ; echo "update_config=1" | 
+						 tee -a /etc/wpa_supplicant/"$NUM".conf ;  wpa_passphrase "$NUM" "$PASS" | 
+						 tee -a /etc/wpa_supplicant/"$NUM".conf ; 
+				    grep Passphrase /etc/wpa_supplicant/"$NUM".conf &&  rm /etc/wpa_supplicant/"$NUM".conf && 
+						echo "The password must be at least 8 characters" > /dev/tty;}
+
+forget() {  rm /etc/wpa_supplicant/"$NUM".conf ;
+					  rm /etc/wpa_supplicant/wpa_supplicant.conf ; 
+            killall wpa_supplicant ;  dhclient -r ; echo "Deleted!" > /dev/tty;}						
+case "$1" in
+				--scan) scan;;
+				-s) scan;;
+				--add) add;;
+				-a) add;;
+				--connect) connect;;
+				-c) connect;;	
+				--disconnect) disconnect;;
+				-d) disconnect;;
+				--forget) forget;;
+				-f) forget;;
+				--help) help;;
+				-h) help;;
+				-cl) cl;;
+esac>/dev/null
