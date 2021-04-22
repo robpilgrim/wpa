@@ -1,6 +1,11 @@
 # wpa
 simple sh script to work with wpa_supplicant if you're lazy enough to use long commands
 
+# Dependencies
+* wpa_supplicant
+* iw
+* dhcpcd
+
 # How to use
 ```
 put the script in $PATH and run it as root.
